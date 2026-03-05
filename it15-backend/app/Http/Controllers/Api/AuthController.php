@@ -12,15 +12,21 @@ class AuthController extends Controller
     {
         $request->validate([
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'required'
         ]);
 
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json([
-                'message' => 'Invalid credentials',
+                'message' => 'Invalid credentials'
             ], 401);
         }
 
-}
+        $user = Auth::user();
+        $token = $user->createToken('react-app')->plainTextToken;
 
+        return response()->json([
+            'user' => $user,
+            'token' => $token
+        ]);
+    }
 }
